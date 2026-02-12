@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Valentine 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+height:100vh;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(-45deg,#ff9a9e,#fecfef,#fcb69f,#ffdde1);
+background-size:400% 400%;
+animation:gradient 12s ease infinite;
+}
+@keyframes gradient{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.overlay{
+position:absolute;
+width:100%;
+height:100%;
+backdrop-filter:blur(10px);
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.card{
+width:90%;
+max-width:500px;
+padding:30px;
+border-radius:25px;
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,0.3);
+text-align:center;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+position:relative;
+}
+
+h1{
+font-family:'Dancing Script',cursive;
+color:white;
+font-size:30px;
+margin-bottom:20px;
+}
+
+button{
+padding:12px 25px;
+margin:10px;
+border:none;
+border-radius:30px;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+font-weight:600;
+}
+
+.yes{
+background:#ff4d88;
+color:white;
+box-shadow:0 5px 15px rgba(255,0,102,0.4);
+}
+
+.no{
+background:#ccc;
+}
+
+.hidden{display:none}
+
+/* Progress bar */
+.progress{
+height:8px;
+background:rgba(255,255,255,0.3);
+border-radius:10px;
+margin-top:15px;
+overflow:hidden;
+}
+.bar{
+height:100%;
+width:0%;
+background:#ff4d88;
+transition:0.4s;
+}
+
+/* Floating bg hearts */
+.heart{
+position:absolute;
+width:15px;
+height:15px;
+background:#ff4d88;
+transform:rotate(45deg);
+animation:float 6s linear infinite;
+}
+.heart:before,.heart:after{
+content:"";
+position:absolute;
+width:15px;
+height:15px;
+background:#ff4d88;
+border-radius:50%;
+}
+.heart:before{top:-7px;}
+.heart:after{left:-7px;}
+
+@keyframes float{
+0%{bottom:-10%;opacity:1}
+100%{bottom:110%;opacity:0}
+}
+
+/* Broken hearts rain */
+.broken{
+position:absolute;
+width:12px;
+height:12px;
+background:#ff4d88;
+transform:rotate(45deg);
+animation:rain 2s forwards;
+}
+.broken:before,.broken:after{
+content:"";
+position:absolute;
+width:12px;
+height:12px;
+background:#ff4d88;
+border-radius:50%;
+}
+.broken:before{top:-6px;}
+.broken:after{left:-6px;}
+
+@keyframes rain{
+to{
+transform:translateY(200px) rotate(360deg);
+opacity:0;
+}
+}
+
+/* Confetti burst */
+.confetti{
+position:fixed;
+width:8px;
+height:8px;
+animation:burst 2s forwards;
+}
+@keyframes burst{
+to{
+transform:translate(var(--x),var(--y)) rotate(720deg);
+opacity:0;
+}
+}
+
+/* Typing note effect */
+#finalNote{
+font-family:'Dancing Script',cursive;
+color:#fff;
+font-size:24px;
+line-height:1.8;
+margin-top:20px;
+display:inline-block;
+}
+
+.shine{
+color:#fff;
+text-shadow:0 0 8px #ff4d88,0 0 12px #ff6699;
+animation:glow 0.6s infinite alternate;
+}
+
+@keyframes glow{
+0%{text-shadow:0 0 8px #ff4d88,0 0 12px #ff6699;}
+100%{text-shadow:0 0 18px #ff4d88,0 0 25px #ff6699;}
+}
+</style>
+</head>
+
+<body>
+<div class="overlay">
+
+<div class="card" id="first">
+<h1>Would you be My Valentine? 💕</h1>
+<button class="yes" onclick="start()">Yes 😍</button>
+</div>
+
+<div class="card hidden" id="quiz">
+<h1 id="question"></h1>
+<div id="buttons"></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+</div>
+
+</div>
+
+<script>
+// Floating bg hearts
+setInterval(()=>{
+const h=document.createElement("div");
+h.className="heart";
+h.style.left=Math.random()*100+"%";
+h.style.animationDuration=(4+Math.random()*3)+"s";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),7000);
+},600);
+
+// 25 questions
+const questions=[
+"Do you remember our first meeting? 💑",
+"Do I make you smile every day? 😊",
+"Am I your favorite person? 😌",
+"Do you trust me with your heart? 💖",
+"Do you feel safe with me? 🤗",
+"Do you love our late night talks? 🌙",
+"Do I annoy you sometimes? 😜",
+"But you still love me, right? 😏",
+"Do you enjoy our silly moments? 😂",
+"Do you like holding my hand? 🤝",
+"Am I your best friend? 🥰",
+"Do you miss me when I'm not around? 💭",
+"Do I make your bad days better? ☀️",
+"Do you love our memories? 📸",
+"Do you feel lucky to have me? 🍀",
+"Do I make you laugh? 😄",
+"Do you feel loved by me? ❤️",
+"Would you choose me again? 💍",
+"Do you believe in us? 🌈",
+"Do I complete you? 💞",
+"Do you like my silly side? 🤪",
+"Do you see a future with me? 🏡",
+"Do you love me more than yesterday? 💕",
+"Do you know how much I love you? 😘",
+"Will you be my Valentine forever? 💘"
+];
+
+let i=0;
+let yesScale=1;
+let noBroken=false;
+
+function start(){
+first.classList.add("hidden");
+quiz.classList.remove("hidden");
+load();
+}
+
+function load(){
+noBroken=false;
+yesScale=1;
+document.getElementById("question").innerText=questions[i];
+document.getElementById("bar").style.width=(i/questions.length*100)+"%";
+
+if(i===questions.length-1){
+document.getElementById("buttons").innerHTML=`
+<button class="yes" id="yesBtn" onclick="yes()">Yes ❤️</button>
+<button class="no" id="runaway">No 🙈</button>`;
+runaway();
+}else{
+document.getElementById("buttons").innerHTML=`
+<button class="yes" id="yesBtn" onclick="yes()">Yes ❤️</button>
+<button class="no" id="noBtn" onclick="breakNo()">No 😅</button>`;
+}
+}
+
+function yes(){
+i++;
+if(i<questions.length) load();
+else setTimeout(showFinal,1500); // 1.5s delay
+}
+
+function breakNo(){
+if(noBroken) return;
+noBroken=true;
+
+yesScale+=0.3;
+document.getElementById("yesBtn").style.transform="scale("+yesScale+")";
+
+const btn=document.getElementById("noBtn");
+const rect=btn.getBoundingClientRect();
+btn.remove();
+
+// broken hearts rain
+for(let j=0;j<25;j++){
+const b=document.createElement("div");
+b.className="broken";
+b.style.left=rect.left+rect.width/2+"px";
+b.style.top=rect.top+"px";
+b.style.animationDuration=(1+Math.random()*1.5)+"s";
+document.body.appendChild(b);
+setTimeout(()=>b.remove(),2000);
+}
+}
+
+function runaway(){
+const btn=document.getElementById("runaway");
+btn.addEventListener("mouseover",()=>{
+btn.style.position="absolute";
+btn.style.left=Math.random()*70+"%";
+btn.style.top=Math.random()*70+"%";
+});
+}
+
+function showFinal(){
+quiz.innerHTML=`<h1>I Love You 💖</h1>
+<div id="finalNote"></div>`;
+confettiBlast();
+typeNote("Thank you for being the anchor of my life. You bring out the best in me, and show what true love is. Here's to us and our journey together. Happy Valentine's Day! I promise to love you today, tomorrow, and always. ❤️");
+}
+
+function confettiBlast(){
+for(let i=0;i<150;i++){
+const c=document.createElement("div");
+c.className="confetti";
+c.style.left="50%";
+c.style.top="50%";
+c.style.background=["#ff4d88","#fff","#ffd700"][Math.floor(Math.random()*3)];
+c.style.setProperty("--x",(Math.random()*600-300)+"px");
+c.style.setProperty("--y",(Math.random()*600-300)+"px");
+document.body.appendChild(c);
+setTimeout(()=>c.remove(),2000);
+}
+}
+
+function typeNote(text){
+const container=document.getElementById("finalNote");
+let idx=0;
+function typeChar(){
+if(idx<text.length){
+const span=document.createElement("span");
+span.textContent=text[idx];
+span.className="shine";
+container.appendChild(span);
+idx++;
+setTimeout(typeChar,50);
+}
+}
+typeChar();
+}
+</script>
+</body>
+</html>
